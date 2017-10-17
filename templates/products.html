@@ -1,0 +1,92 @@
+{% extends "layout.html" %} 
+{% block title %}{{ super() }} Product List{% endblock %} 
+{% block head %} {{ super() }} {% endblock %} 
+
+{% block content %}
+
+<div class = 'flash'>
+              {% with messages = get_flashed_messages() %}
+      {% if messages %}
+          
+        <ul>
+        {% for message in messages %}
+            <li> <strong> {{ message }} </strong> </li>
+        {% endfor %}
+        </ul>
+        {% endif %}
+    {% endwith %}
+
+</div>
+
+<nav class="col-sm-3 col-md-2 d-none d-sm-block bg-light sidebar">
+    <ul class="nav nav-pills flex-column">
+        <li class="nav-item">
+          <a class="nav-link active" 
+            href="{{url_for('products')}}"
+            {% if type == None %}
+                style="font-weight: bold;"
+            {% endif %}
+            >All</a>
+        </li>
+
+        {% for product_type in product_types %}
+        <li class="nav-item">
+          <a class="nav-link" 
+             href="{{url_for('products', type=product_type.type)}}" 
+             {% if type == product_type.type %}
+                style="font-weight: bold;"
+             {% endif %}
+            >{{product_type.type}}
+          </a>
+        </li>
+        {% endfor %}
+    </ul>
+</nav>
+<main class="col-sm-9 col-md-10 pt-3" role="main">
+    <h1>Product List</h1>
+    {%if 'username' in session %}
+      <p>You can add<a href="{{ url_for('newProduct') }}"> new Products</a></p>
+    {% endif %}
+    <div class="row">
+        {% for product in products %}
+
+        <div class="item col-xs-12 col-sm-6 col-md-4">
+            <div class="item-image">
+                <a href="{{ url_for('viewProduct', slug=product.slug) }}">
+                    <div class="item-price">{{product.price}}</div>
+                    <img style="width:180px;height:180px;"
+                         {% if product.image_path or product.image_path != '' %} 
+                         src="{{ url_for('static', filename=product.image_path) }}"
+                         {% else %}
+                         src="{{ url_for('static', filename='img/no_image_found.jpg') }}"
+                         {% endif%} 
+                         alt="{{product.name}}">
+                </a>
+            </div>
+            <div class="item-name">
+                <a href="{{ url_for('viewProduct', slug=product.slug) }}"><p>{{product.name|truncate(40)}}</p></a>
+            </div>
+            <div class="item-desc">
+                <p>
+                    {{product.description|truncate(80)}}
+                </p>
+            </div>
+            <div  class="item-oper">
+                <p> 
+                    {%if 'username' in session %}
+                      {% if session['username'] == product.user.name%}
+                        <a href="{{ url_for('editProduct', slug=product.slug) }}">Edit</a> | 
+                        <a href="{{ url_for('deleteProduct', slug=product.slug) }}">Delete</a> |
+                      {% endif %}
+                      <a href="{{ url_for('viewProduct', slug=product.slug) }}">View</a>
+                    {% endif %}
+                </p>
+            </div>
+            <hr>
+        </div>
+        
+        {% endfor %}
+    </div>
+</main>
+
+{% endblock %}

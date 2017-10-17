@@ -1,0 +1,71 @@
+{% extends "layout.html" %} {% block title %}{{ super() }} Add New Product{% endblock %} {% block head %} {{ super() }} {% endblock %} {% block content %}
+<h2>Edit Product</h2>
+
+<form class="bs-example bs-example-form" 
+      data-example-id="simple-input-groups" 
+      enctype="multipart/form-data"
+      action="{{ url_for('editProduct', slug=templateData['slug'] )}}" method="post">
+
+    <p>* Required fields.</p>
+    <div class="input-group">
+        <span class="input-group-addon format-txt-field" id="nametxt">* Name:</span>
+        <input id="name" name="name" type="text" class="form-control format-field" placeholder="Name" aria-describedby="nametxt" value='{{templateData['name']}}'>
+        <input type="hidden" id="slug" name="slug" value='{{templateData['slug']}}'>
+    </div> 
+    <div class="input-group">
+        <span class="input-group-addon format-txt-field" id="descriptiontxt">* Description:</span>
+        <input id="description" name="description" type="text" class="form-control format-field" placeholder="Description" 
+        aria-describedby="descriptiontxt" value='{{templateData['description']}}'>
+    </div>
+    <div class="input-group">
+        <span class="input-group-addon format-txt-field" id="pricetxt">* Price:</span>
+        <input id="price" name="price" type="text" class="form-control format-field" placeholder="Price" aria-describedby="pricetxt" 
+        value='{{templateData['price']}}'>
+    </div>
+    <div class="input-group">
+        <span class="input-group-addon format-txt-field" id="typetxt">Type:</span>
+        <div class="dropup  format-field">
+            <select id="type" name="type" class="input-group-addon format-txt-field" style="margin-left:35px;" aria-describedby="typetxt">
+                {% for t in product_types %}
+                <option value="{{ t.id }}" 
+                {% if t.id == templateData['type']  %}
+                    selected
+                {% endif %}
+                >{{t.type}}</option>" {% endfor %}
+            </select>
+        </div>
+    </div>
+    <div class="input-group">
+        <span class="input-group-addon format-txt-field" id="imagetxt">Image</span>
+        <input id="image" name="image" onchange="readURL(this);"
+                type="file" class="format-field" name="fileToUpload" id="fileToUpload" aria-describedby="imagetxt"
+                accept=".png, .jpg, .jpeg" value="{{ templateData['image_path']}}">
+                <input type="hidden" id="image_value" name="image_value" >
+    </div>
+
+    <div class="input-group">
+        <img style="width:180px;height:180px;" id="blah" src="{{ url_for('static', filename=templateData['image_path'] ) }}" alt="" />
+    </div>
+    
+    <br>
+    <input class="btn btn-success" type="submit" value="Submit" name="submit">
+    <a class="btn btn-primary" href="{{ url_for('products') }}">Cancel</a>
+</form>
+
+<script>
+    function readURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                $('#blah')
+                    .attr('src', e.target.result)
+                    .width(150)
+                    .height(200);
+            };
+
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+</script>
+{% endblock %}
