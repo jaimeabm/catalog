@@ -25,6 +25,6 @@ rsa==3.4.2
 six==1.11.0
 SQLAlchemy==1.1.14
 Unidecode==0.4.21
-urllib3==1.22
+urllib3==1.26.5
 webencodings==0.5.1
 Werkzeug==0.12.2
